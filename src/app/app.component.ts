@@ -15,18 +15,37 @@ export class AppComponent {
   title = 'ng-expression-builder';
 
   functions: any = [
-    { name: 'add', function: this.add, args: 2 },
-    { name: 'subtract', function: this.subtract, args: 2 },
-    { name: 'foo', function: this.foo, args: 3 },
+    {
+      name: 'add',
+      function: this.add,
+      args: ['', ''],
+      children: []
+    },
+    {
+      name: 'subtract',
+      function: this.subtract,
+      args: ['', ''],
+
+      children: []
+    },
+    {
+      name: 'foo',
+      function: this.foo,
+      args: ['', '', ''],
+
+      children: []
+    },
     {
       name: 'doSomethingComplicated',
       function: this.doSomethingComplicated,
-      args: 1
+      args: [''],
+      children: []
     }
   ];
 
   activeFunctions: any = [];
   expression: any = '';
+  inputs: any = [];
 
   add(a, b) {
     return a + b;
@@ -45,7 +64,7 @@ export class AppComponent {
   }
 
   onDropToExp(event: CdkDragDrop<string[]>) {
-    console.log(event.container.data, event.currentIndex);
+    console.log(event.container.data);
     if (event.previousContainer !== event.container) {
       transferArrayItem(
         event.previousContainer.data,
@@ -53,18 +72,49 @@ export class AppComponent {
         event.previousIndex,
         event.currentIndex
       );
+      this.inputs = this.activeFunctions[event.currentIndex].args;
+      // this.activeFunctions.push(event.container.data);
+      console.log(this.inputs);
     }
   }
 
-  onDropFromExp(event: CdkDragDrop<string[]>) {
-    console.log(event.container.data, event.currentIndex);
-    if (event.previousContainer !== event.container) {
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
-    }
+  evaluateExpression(event) {
+    event.preventDefault();
+    console.log(event.target.value);
+  }
+
+  resetButton() {
+    this.activeFunctions = [];
+    this.inputs = [];
+    this.functions = [
+      {
+        name: 'add',
+        function: this.add,
+        args: ['', ''],
+
+        children: []
+      },
+      {
+        name: 'subtract',
+        function: this.subtract,
+        args: ['', ''],
+
+        children: []
+      },
+      {
+        name: 'foo',
+        function: this.foo,
+        args: ['', '', ''],
+
+        children: []
+      },
+      {
+        name: 'doSomethingComplicated',
+        function: this.doSomethingComplicated,
+        args: [''],
+
+        children: []
+      }
+    ];
   }
 }
