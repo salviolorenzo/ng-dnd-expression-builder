@@ -1,0 +1,32 @@
+.expressionContainer,
+.functionsContainer,
+.dndContainer {
+  width: 80%;
+  margin: 0 auto;
+  border: 1px solid grey;
+  border-radius: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.dndContainer {
+  height: 50%;
+  margin-top: 30px;
+}
+
+.expressionContainer {
+  justify-content: space-evenly;
+  height: 50%;
+}
+
+.functionsContainer {
+  justify-content: space-evenly;
+  height: 30%;
+}
+
+.functions {
+  padding: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+}
