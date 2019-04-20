@@ -44,8 +44,17 @@ export class AppComponent {
   ];
 
   activeFunctions: any = [];
+  innerFunctions: any = [
+    {
+      name: 'doSomethingComplicated',
+      function: this.doSomethingComplicated,
+      args: [''],
+      children: []
+    }
+  ];
   expression: any = '';
   inputs: any = [];
+  innerInputs: any = this.innerFunctions[0].args;
 
   add(a, b) {
     return a + b;
@@ -64,7 +73,11 @@ export class AppComponent {
   }
 
   onDropToExp(event: CdkDragDrop<string[]>) {
-    console.log(event.container.data);
+    let initFunctions = this.functions;
+
+    console.log(event.container);
+    console.log(event.previousContainer);
+    console.log('===================');
     if (event.previousContainer !== event.container) {
       transferArrayItem(
         event.previousContainer.data,
@@ -73,8 +86,8 @@ export class AppComponent {
         event.currentIndex
       );
       this.inputs = this.activeFunctions[event.currentIndex].args;
-      // this.activeFunctions.push(event.container.data);
       console.log(this.inputs);
+      this.functions.push(this.activeFunctions[event.currentIndex]);
     }
   }
 
@@ -85,7 +98,16 @@ export class AppComponent {
 
   resetButton() {
     this.activeFunctions = [];
+    this.innerFunctions = [
+      {
+        name: 'doSomethingComplicated',
+        function: this.doSomethingComplicated,
+        args: [''],
+        children: []
+      }
+    ];
     this.inputs = [];
+    this.innerInputs = this.innerFunctions[0].args;
     this.functions = [
       {
         name: 'add',

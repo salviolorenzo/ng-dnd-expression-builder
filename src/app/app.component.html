@@ -11,10 +11,12 @@
     <div class="functions" *ngFor="let item of activeFunctions" cdkDrag>
       {{ item.name }}
     </div>
-    <form (ngSubmit)="evaluateExpression(event)">
-      <input *ngFor="let input of inputs" />
-      <button *ngIf="inputs.length > 0" type="submit">Evaluate</button>
-    </form>
+    <div class="recExpressionContainer" *ngFor="let input of inputs">
+      <div class="functions" *ngFor="let item of innerFunctions" cdkDrag>
+        {{ item.name }}
+      </div>
+      <div class="innerFunction" *ngFor="let inner of innerInputs"></div>
+    </div>
   </div>
   <div
     class="functionsContainer"
