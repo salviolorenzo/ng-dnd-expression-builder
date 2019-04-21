@@ -1,9 +1,5 @@
-import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import {
-  CdkDragDrop,
-  moveItemInArray,
-  transferArrayItem
-} from '@angular/cdk/drag-drop';
+import { Component, ViewContainerRef } from '@angular/core';
+import { CdkDragDrop, transferArrayItem } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-root',
@@ -44,17 +40,11 @@ export class AppComponent {
   ];
 
   activeFunctions: any = [];
-  innerFunctions: any = [
-    {
-      name: 'doSomethingComplicated',
-      function: this.doSomethingComplicated,
-      args: [''],
-      children: []
-    }
-  ];
+  innerFunctions: any = [];
   expression: any = '';
   inputs: any = [];
-  innerInputs: any = this.innerFunctions[0].args;
+  innerInputs: any = [];
+  isDisabled: boolean = false;
 
   add(a, b) {
     return a + b;
@@ -73,41 +63,60 @@ export class AppComponent {
   }
 
   onDropToExp(event: CdkDragDrop<string[]>) {
-    let initFunctions = this.functions;
-
     console.log(event.container);
     console.log(event.previousContainer);
     console.log('===================');
-    if (event.previousContainer !== event.container) {
+
+    if (
+      event.previousContainer !== event.container &&
+      event.container.id === 'cdk-drop-list-0'
+    ) {
       transferArrayItem(
         event.previousContainer.data,
         event.container.data,
         event.previousIndex,
         event.currentIndex
       );
-      this.inputs = this.activeFunctions[event.currentIndex].args;
+      if (this.inputs.length === 0) {
+        this.inputs = this.activeFunctions[event.currentIndex].args;
+      } else {
+        this.activeFunctions[event.currentIndex].args.forEach(item => {
+          this.inputs.push(item);
+        });
+      }
+      this.functions.push(this.activeFunctions[event.currentIndex]);
+    } else {
+      return false;
+    }
+  }
+
+  onDropToInner(event: CdkDragDrop<string[]>) {
+    if (
+      event.previousContainer !== event.container &&
+      event.container.id !== 'cdk-drop-list-0'
+    ) {
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+      this.innerInputs = this.innerFunctions[event.currentIndex].args;
       console.log(this.inputs);
       this.functions.push(this.activeFunctions[event.currentIndex]);
     }
   }
 
-  evaluateExpression(event) {
-    event.preventDefault();
-    console.log(event.target.value);
-  }
+  // evaluateExpression(event) {
+  //   event.preventDefault();
+  //   console.log(event.target.value);
+  // }
 
   resetButton() {
     this.activeFunctions = [];
-    this.innerFunctions = [
-      {
-        name: 'doSomethingComplicated',
-        function: this.doSomethingComplicated,
-        args: [''],
-        children: []
-      }
-    ];
+    this.innerFunctions = [];
     this.inputs = [];
-    this.innerInputs = this.innerFunctions[0].args;
+    this.innerInputs = [];
     this.functions = [
       {
         name: 'add',
