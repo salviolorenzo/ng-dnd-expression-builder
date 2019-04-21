@@ -2,31 +2,41 @@
   <div class="containerHeader">
     <button class="resetButton" (click)="resetButton()">Reset</button>
   </div>
-  <div class="dndListGroup">
+  <h1>Expression Builder<span>built by Lorenzo Salvio</span></h1>
+  <div class="dndListGroup" cdkDropListGroup>
     <div
       class="expressionContainer"
       cdkDropList
       #expression="cdkDropList"
       [cdkDropListData]="activeFunctions"
-      [cdkDropListConnectedTo]="[functionsList]"
-      (cdkDropListDropped)="onDropToExp($event)"
+      (cdkDropListDropped)="onDropToExp($event, $event.container.id)"
     >
-      <div class="functions" *ngFor="let item of activeFunctions">
+      <h2 *ngIf="activeFunctions.length === 0">Drag your functions here.</h2>
+      <div *ngFor="let item of activeFunctions" class="functions">
         {{ item.name }}
       </div>
+    </div>
+    <div
+      class="expression"
+      *ngFor="let item of activeFunctions; let i = index"
+      [attr.data-index]="i"
+    >
       <div
         class="recExpressionContainer"
         cdkDropList
         #innerExp="cdkDropList"
         [cdkDropListData]="innerFunctions"
-        [cdkDropListConnectedTo]="[functionsList]"
-        *ngFor="let input of inputs"
-        (cdkDropListDropped)="onDropToInner($event)"
+        *ngFor="let child of item.args"
+        (cdkDropListDropped)="onDropToExp($event, $event.container.id)"
       >
-        <div class="functions" *ngFor="let item of innerFunctions">
-          {{ item.name }}
+        <h4 *ngIf="innerFunctions.length === 0">Drag your functions here.</h4>
+
+        <div class="expression" *ngFor="let inner of innerFunctions">
+          <!-- <div *ngIf="activeFunctions[i] === innerFunctions[i]"> -->
+          <div class="functions" cdkDrag>{{ inner.name }}</div>
+          <div class="innerFunction" *ngFor="let unit of inner.args"></div>
+          <!-- </div> -->
         </div>
-        <div class="innerFunction" *ngFor="let inner of innerInputs"></div>
       </div>
     </div>
     <div
@@ -34,7 +44,6 @@
       cdkDropList
       #functionsList="cdkDropList"
       [cdkDropListData]="functions"
-      [cdkDropListConnectedTo]="[expression, innerExp]"
     >
       <div class="functions" *ngFor="let item of functions" cdkDrag>
         {{ item.name }}

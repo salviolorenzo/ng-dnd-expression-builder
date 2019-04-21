@@ -14,28 +14,22 @@ export class AppComponent {
     {
       name: 'add',
       function: this.add,
-      args: ['', ''],
-      children: []
+      args: ['', '']
     },
     {
       name: 'subtract',
       function: this.subtract,
-      args: ['', ''],
-
-      children: []
+      args: ['', '']
     },
     {
       name: 'foo',
       function: this.foo,
-      args: ['', '', ''],
-
-      children: []
+      args: ['', '', '']
     },
     {
       name: 'doSomethingComplicated',
       function: this.doSomethingComplicated,
-      args: [''],
-      children: []
+      args: ['']
     }
   ];
 
@@ -43,8 +37,6 @@ export class AppComponent {
   innerFunctions: any = [];
   expression: any = '';
   inputs: any = [];
-  innerInputs: any = [];
-  isDisabled: boolean = false;
 
   add(a, b) {
     return a + b;
@@ -62,14 +54,12 @@ export class AppComponent {
     return;
   }
 
-  onDropToExp(event: CdkDragDrop<string[]>) {
-    console.log(event.container);
-    console.log(event.previousContainer);
-    console.log('===================');
+  onDropToExp(event: CdkDragDrop<object[]>, containerId) {
+    console.log(event);
 
     if (
       event.previousContainer !== event.container &&
-      event.container.id === 'cdk-drop-list-0'
+      containerId === 'cdk-drop-list-0'
     ) {
       transferArrayItem(
         event.previousContainer.data,
@@ -77,46 +67,38 @@ export class AppComponent {
         event.previousIndex,
         event.currentIndex
       );
-      if (this.inputs.length === 0) {
-        this.inputs = this.activeFunctions[event.currentIndex].args;
-      } else {
-        this.activeFunctions[event.currentIndex].args.forEach(item => {
-          this.inputs.push(item);
-        });
-      }
-      this.functions.push(this.activeFunctions[event.currentIndex]);
-    } else {
-      return false;
-    }
-  }
 
-  onDropToInner(event: CdkDragDrop<string[]>) {
-    if (
+      this.functions.splice(
+        event.previousIndex,
+        0,
+        this.activeFunctions[event.currentIndex]
+      );
+    } else if (
       event.previousContainer !== event.container &&
-      event.container.id !== 'cdk-drop-list-0'
+      containerId !== 'cdk-drop-list-0'
     ) {
+      console.log(containerId);
+
       transferArrayItem(
         event.previousContainer.data,
         event.container.data,
         event.previousIndex,
         event.currentIndex
       );
-      this.innerInputs = this.innerFunctions[event.currentIndex].args;
-      console.log(this.inputs);
-      this.functions.push(this.activeFunctions[event.currentIndex]);
-    }
-  }
 
-  // evaluateExpression(event) {
-  //   event.preventDefault();
-  //   console.log(event.target.value);
-  // }
+      this.functions.splice(
+        event.previousIndex,
+        0,
+        this.innerFunctions[event.currentIndex]
+      );
+    }
+    console.log(this.innerFunctions);
+    console.log(this.activeFunctions);
+  }
 
   resetButton() {
     this.activeFunctions = [];
     this.innerFunctions = [];
-    this.inputs = [];
-    this.innerInputs = [];
     this.functions = [
       {
         name: 'add',
